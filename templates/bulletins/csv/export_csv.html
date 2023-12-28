@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load bulletins_extras %}
+{% block breadcrumb%}
+<li class="breadcrumb-item"><a href="{% url 'home' %}" class="link-secondary link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Accueil</a></li>
+<li class="breadcrumb-item active" aria-current="page" class="text-secondary">Exporter</li>
+{% endblock breadcrumb%}
+{% block content %}
+<div class="container-fluid container-md">
+    <div class="row">
+        <div class="col-12 col-lg-10 col-xl-8 mt-4">
+                  <h1 class="mb-4">Exportation CSV</h1>
+
+            <fieldset class="mb-3 rounded shadow">
+                <h2 class="pb-2">Élèves</h2>
+
+                <p>Le fichier csv comportera une ligne d'en-tête avec les champs ci-dessous, séparés par des points-virgules.</p>
+                
+                <div class="row gx-2">
+                    <div class="col-12 mb-sm-0 col-sm-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">id</li>
+                            <li class="list-group-item">nom</li>
+                            <li class="list-group-item">prenom</li>
+                            <li class="list-group-item">date_naissance</li>
+                          </ul>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">genre</li>
+                            <li class="list-group-item">statut</li>
+                            <li class="list-group-item">classe</li>
+                          </ul>
+
+                    </div>
+                </div>
+    
+                <a class="btn btn-primary mt-3 mb-3" href="{% url 'export_eleves_csv' %}">Tous les élèves</a>
+
+                <a class="btn btn-danger mt-3 mb-3" href="{% url 'export_eleves_actifs_csv' %}">{{annee_en_cours.intitule}}</a>
+    
+            </fieldset>
+
+            <fieldset class="mb-3 rounded shadow">
+                <h2 class="pb-2">Enseignements</h2>
+
+                <p>Le fichier csv comportera une ligne d'en-tête avec les champs ci-dessous, séparés par des points-virgules.</p>
+                
+                <div class="row gx-2">
+                    <div class="col-12 mb-sm-0 col-sm-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">id</li>
+                            <li class="list-group-item">intitule</li>
+                            <li class="list-group-item">classe</li>
+                            <li class="list-group-item">trimestre</li>
+                            <li class="list-group-item">enseignant</li>
+                          </ul>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">titre</li>
+                            <li class="list-group-item">descriptif</li>
+                            <li class="list-group-item">date_debut</li>
+                            <li class="list-group-item">date_fin</li>
+                            <li class="list-group-item">volume_horaire</li>
+                          </ul>
+
+                    </div>
+                </div>
+
+                <a class="btn btn-primary mt-3 mb-3" href="{% url 'export_disciplines_csv' %}">Tous les enseignements</a>
+
+                <a class="btn btn-danger mt-3 mb-3" href="{% url 'export_disciplines_actives_csv' %}">{{annee_en_cours.intitule}}</a>
+    
+            </fieldset>
+
+            <fieldset class="mb-3 rounded shadow">
+                <h2 class="pb-2">Appréciations</h2>
+
+                <p>Le fichier csv comportera une ligne d'en-tête avec les champs ci-dessous, séparés par des points-virgules.</p>
+                
+                <div class="row gx-2">
+                    <div class="col-12 mb-sm-0 col-sm-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">id</li>
+                            <li class="list-group-item">enseignement</li>
+                            <li class="list-group-item">id_enseignement</li>
+                            <li class="list-group-item">nom_eleve</li>
+                            <li class="list-group-item">prenom_eleve</li>
+                            <li class="list-group-item">commentaire</li>
+                          </ul>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">note</li>
+                            <li class="list-group-item">attitude</li>
+                            <li class="list-group-item">engagement</li>
+                            <li class="list-group-item">resultat</li>
+                            <li class="list-group-item">id_competences</li>
+                          </ul>
+                    </div>
+                </div>
+
+                <a class="btn btn-primary mt-3 mb-3" href="{% url 'export_appreciations_csv' %}">Toutes les appréciations</a>
+
+                <a class="btn btn-danger mt-3 mb-3" href="{% url 'export_appreciations_actives_csv' %}">{{annee_en_cours.intitule}}</a>
+    
+            </fieldset>
+
+
+        </div>
+    </div>
+</div>
+
+            <!--TODO : exportation des stages et des projets-->
+
+
+{% endblock content %}

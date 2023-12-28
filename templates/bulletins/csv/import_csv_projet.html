@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load bulletins_extras %}
+{% block breadcrumb%}
+<li class="breadcrumb-item"><a href="{% url 'home' %}" class="link-secondary link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Accueil</a></li>
+<li class="breadcrumb-item active" aria-current="page" class="text-secondary">Importer projets</li>
+{% endblock breadcrumb%}
+{% block content %}
+<div class="container">
+    <div class="row pt-4">
+        <div class="col-10 offset-1">
+            <h1>Importation des projets</h1>
+
+    
+                {% if logError %}
+                <fieldset class="mb-3 rounded shadow mt-3">
+                    <legend class="mb-3"><h2>Erreur{{logError|pluralize}}</h2></legend>
+
+                    {% for error in logError %}
+                    <div class="alert alert-warning" role="alert">
+                        {{ error }}
+                    </div>
+                    {% endfor %}
+
+                    <a href="{% url 'import_csv'%}"" class="btn btn-primary">Retour au choix du fichier</a>
+                </fieldset>
+                {% else %}
+
+                <fieldset class="rounded shadow">
+                    <legend class="mb-3"><h2>Validation</h2></legend>
+
+                    <p><strong>Les données sont conformes pour l'importation.</strong></p>
+
+                    <form method="post">{% csrf_token %}
+                        <input class="btn btn-primary" type="submit" value="Importer les données">
+                    </form>
+
+                </fieldset>
+                {% endif %}
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock content %}

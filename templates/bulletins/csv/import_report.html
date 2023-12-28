@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load bulletins_extras %}
+{% block breadcrumb%}
+<div class="container p-0">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb my-auto">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}" class="link-light">Bulletins {{annee_en_cours}}</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'import_csv' %}" class="link-light">Importer</a></li>
+          <li class="breadcrumb-item active text-white" aria-current="page">Rapport</li>
+        </ol>
+      </nav>
+  </div>
+{% endblock breadcrumb%}
+{% block content %}
+<div class="container">
+    <div class="row pt-4">
+        <div class="col-10 offset-1">
+            <fieldset class="shadow rounded mt-4 mb-4">
+                <legend class="mb-3"><h1>Rapport d'importation</h1></legend>
+
+                {% for message in log %}
+            <div class="alert alert-warning" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+            </fieldset>
+            
+
+            
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock content %}

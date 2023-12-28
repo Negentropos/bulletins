@@ -1,0 +1,410 @@
+{% extends 'base.html' %}
+{% load bulletins_extras %}
+{% block breadcrumb%}
+<li class="breadcrumb-item"><a href="{% url 'home' %}" class="link-secondary link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Accueil</a></li>
+<li class="breadcrumb-item active" aria-current="page" class="text-secondary">Importer</li>
+{% endblock breadcrumb%}
+{% block content %}
+<div class="container-fluid container-md">
+    <div class="row">
+        <div class="col-12 mt-4">
+                  <h1 class="mb-4">Importation CSV</h1>
+    
+            <fieldset class="mb-3 mt-4 shadow">
+                <legend><h2>Importer des élèves</h2></legend>
+    
+                {% if logEleve %}
+    
+
+                {% for error in logEleve%}
+                <div class="alert alert-warning" role="alert">
+                    {{error}}
+                  </div>
+                  {%endfor%}
+                                            
+                {% endif %}
+    
+                <p>Le fichier csv doit comporter une ligne d'en-tête avec les champs ci-dessous, séparés par des points-virgules.</p>
+    
+                <table class="table table-striped"">
+                    <tbody>
+                        <tr>
+                            <th>nom</th>
+                            <td>ne doit pas excéder 30 caractères, première lettre en majuscule - <strong>champ obligatoire</strong></td>
+                        </tr>
+                        <tr>
+                            <th>prenom</th>
+                            <td>ne doit pas excéder 30 caractères, première lettre en majuscule - <strong>champ obligatoire</strong></td>
+                        </tr>
+                        <tr>
+                            <th>genre</th>
+                            <td>'M' ou 'F' pour masculin et féminin - <strong>champ obligatoire</strong></td>
+                        </tr>
+                        <tr>
+                            <th>classe</th>
+                            <td>si plusieurs classes, séparer par des virgules (ex : 9,10). Si pour l'année en cours, la classe mentionnée n'existe pas elle sera créée.</td>
+                        </tr>
+                        <tr>
+                            <th>date_naissance</th>
+                            <td>doit respecter le format <strong>YYYY-MM-DD</strong>, par exemple <strong>2005-02-26</strong></td>
+                        </tr>
+                        <tr>
+                            <th>statut</th>
+                            <td>ne reçoit que trois valeurs possibles : <strong>EL</strong> pour élève,<strong>HP</strong> pour hôte payant et <strong>EXC</strong> pour échange linguistique. Élève par défaut si le champ n'est pas spécifié.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+    
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% for hidden in formEleve.hidden_fields %}
+                    {{ hidden }}
+                    {% endfor %}
+                    {{ formEleve.import_eleve }}
+    
+                    <div class="row gx-2">
+                        <div class="col-12 mb-2 mb-sm-0 col-sm-auto">
+                            <div>
+                                {{formEleve.file|add_classes:'form-control'}}
+                            </div>
+                        </div>
+                        <div class="col-12 mb-sm-0 col-sm-auto">
+                            <input class="btn btn-primary" type="submit" value="Importer">
+                        </div>
+                    </div>
+                    
+                </form>
+    
+    
+            </fieldset>
+
+            <fieldset class="mb-3 mt-4 rounded shadow">
+                <legend><h2>Importer des disciplines</h2></legend>
+
+                
+                {% if logDiscipline %}
+    
+                {% for error in logDiscipline%}
+                <div class="alert alert-warning" role="alert">
+                    {{error}}
+                  </div>
+                  {%endfor%}
+                                            
+                {% endif %}
+
+
+
+            <p>Le fichier csv doit comporter une ligne d'en-tête avec les champs ci-dessous, séparés par des points-virgules.</p>
+
+            <table class="table table-striped"">
+                <tbody>
+                    <tr>
+                        <th>intitule</th>
+                        <td>ne doit pas excéder 60 caractères <strong>champ obligatoire</strong></td>
+                    </tr>
+                    <tr>
+                        <th>intitule_court</th>
+                        <td>ne doit pas excéder 30 caractères - à spécifier si intitulé trop long, viendra remplacer intitulé dans les tableaux etc.</td>
+                    </tr>
+                    <tr>
+                        <th>titre</th>
+                        <td>ne doit pas excéder 200 caractères</td>
+                    </tr>
+                    <tr>
+                        <th>classe</th>
+                        <td>si plusieurs classes, séparer par des virgules (ex : 9,10). Si pour l'année en cours, la classe mentionnée n'existe pas elle sera créée - <strong>champ obligatoire</strong></td>
+                    </tr>
+                    <tr>
+                        <th>trimestre</th>
+                        <td>ne reçoit que trois valeurs possibles : <strong>T1</strong>, <strong>T2</strong> ou <strong>T3</strong> - <strong>champ obligatoire</strong></td>
+                    <tr>
+                        <th>enseignant</th>
+                        <td>si plusieurs enseignants, séparer par des virgules - <strong>champ obligatoire</strong></td>
+                    </tr>
+                    <tr>
+                        <th>descriptif</th>
+                        <td>ne doit pas excéder 600 caractères</td>
+                    </tr>
+                    <tr>
+                        <th>type_enseignement</th>
+                        <td>Ne peut reçoit que 6 valeurs possibles : 
+                            <strong>PR</strong> pour 'Période d'enseignement', 
+                            <strong>AT</strong> pour 'atelier', 
+                            <strong>HH</strong> pour 'heures hebdomadaires', 
+                            <strong>'PRHH'</strong> pour 'enseignement en période et en heures hebdomadaires', 
+                            <strong>'HHAT'</strong> pour 'Enseignement en heures hebdomadaires et en atelier',
+                            <strong>'PRHHAT'</strong> pour 'Enseignement en période, en heures hebdomadaires et en atelier',
+                            <strong>'ST'</strong> pour 'Semaine thématique'.
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>volume_horaire</th>
+                        <td>ne reçoit que des valeurs numériques entières (nombre d'heures).</td>
+                    </tr>
+                    <tr>
+                        <th>date_debut</th>
+                        <td>doit respecter le format suivant : <strong>YYYY-MM-DD</strong>, par exemple <strong>2005-02-26</strong></td>
+                    </tr>
+                    <tr>
+                        <th>date_fin</th>
+                        <td>doit respecter le format suivant : <strong>YYYY-MM-DD</strong>, par exemple <strong>2005-02-26</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for hidden in formDiscipline.hidden_fields %}
+                {{ hidden }}
+                {% endfor %}
+                {{ formDiscipline.import_eleve }}
+
+                <div class="row gx-2">
+                    <div class="col-12 mb-2 mb-sm-0 col-sm-auto">
+                        <div>
+                            {{formDiscipline.file|add_classes:'form-control'}}
+                        </div>
+                    </div>
+                    <div class="col-12 mb-sm-0 col-sm-auto">
+                        <input class="btn btn-primary" type="submit" value="Importer">
+                    </div>
+                </div>
+                
+            </form>
+
+
+        </fieldset>
+                
+    
+            </fieldset>
+
+            <fieldset class="mb-3 mt-4 rounded shadow">
+                <legend><h2>Importer des appréciations</h2></legend>
+    
+                {% if logAppreciation %}
+    
+                {% for error in logAppreciation%}
+                <div class="alert alert-warning" role="alert">
+                    {{error}}
+                  </div>
+                  {%endfor%}
+                                            
+                {% endif %}
+
+            <p>Le fichier csv doit comporter une ligne d'en-tête avec les champs ci-dessous, séparés par des points-virgules.</p>
+
+            <table class="table table-striped"">
+                <tbody>
+                    <tr>
+                        <th>id_discipline</th>
+                        <td><strong>champ obligatoire</strong></td>
+                    </tr>
+                    <tr>
+                        <th>id_eleve</th>
+                        <td><strong>champ obligatoire</strong></td>                    
+                    </tr>
+                    <tr>
+                        <th>commentaire</th>
+                        <td>ne doit pas excéder 1000 caractères.</td>                    
+                    </tr>
+                    
+                    <tr>
+                        <th>note</th>
+                        <td>ne reçoit que des nombres décimaux, la virgule doit utiliser le caractère "."</td>
+                    <tr>
+                        <th>attitude</th>
+                        <td>ne doit pas excéder 2 caractères</td>                    </tr>
+                    <tr>
+                        <th>engagement</th>
+                        <td>ne doit pas excéder 2 caractères</td>
+                    </tr>
+                    <tr>
+                        <th>resultat</th>
+                        <td>ne doit pas excéder 2 caractères</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for hidden in formAppreciation.hidden_fields %}
+                {{ hidden }}
+                {% endfor %}
+                {{ formAppreciation.import_appreciation }}
+
+                <div class="row gx-2">
+                    <div class="col-12 mb-2 mb-sm-0 col-sm-auto">
+                        <div>
+                            {{formAppreciation.file|add_classes:'form-control'}}
+                        </div>
+                    </div>
+                    <div class="col-12 mb-sm-0 col-sm-auto">
+                        <input class="btn btn-primary" type="submit" value="Importer">
+                    </div>
+                </div>
+                
+            </form>
+    
+    
+            </fieldset>
+
+            <fieldset class="mb-3 mt-4 rounded shadow">
+                <legend><h2>Importer des projets</h2></legend>
+    
+                {% if logProjet %}
+    
+                {% for error in logProjet%}
+                <div class="alert alert-warning" role="alert">
+                    {{error}}
+                  </div>
+                  {%endfor%}
+                                            
+                {% endif %}
+
+            <p>Le fichier csv doit comporter une ligne d'en-tête avec les champs ci-dessous, séparés par des points-virgules.</p>
+
+            <table class="table table-striped"">
+                <tbody>
+                    <tr>
+                        <th>id_eleve</th>
+                    </tr>
+                    <tr>
+                        <th>trimestre</th>
+                    </tr>
+
+                    <tr>
+                        <th>type_projet</th>
+                    </tr>
+
+                    <tr>
+                        <th>titre</th>
+                    </tr>
+
+                    <tr>
+                        <th>descriptif</th>
+                    </tr>
+
+                    <tr>
+                        <th>appreciation</th>
+                    </tr>
+
+                    <tr>
+                        <th>tuteur</th>
+                    </tr>
+                    
+                </tbody>
+            </table>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for hidden in formProjet.hidden_fields %}
+                {{ hidden }}
+                {% endfor %}
+                {{ formProjet.import_projet }}
+
+                <div class="row gx-2">
+                    <div class="col-12 mb-2 mb-sm-0 col-sm-auto">
+                        <div>
+                            {{formProjet.file|add_classes:'form-control'}}
+                        </div>
+                    </div>
+                    <div class="col-12 mb-sm-0 col-sm-auto">
+                        <input class="btn btn-primary" type="submit" value="Importer">
+                    </div>
+                </div>
+                
+            </form>
+    
+    
+            </fieldset>
+
+            <fieldset class="mb-3 mt-4 rounded shadow">
+                <legend><h2>Importer des stages</h2></legend>
+    
+                {% if logStage %}
+    
+                {% for error in logStage%}
+                <div class="alert alert-warning" role="alert">
+                    {{error}}
+                  </div>
+                  {%endfor%}
+                                            
+                {% endif %}
+
+            <p>Le fichier csv doit comporter une ligne d'en-tête avec les champs ci-dessous, séparés par des points-virgules.</p>
+
+            <table class="table table-striped"">
+                <tbody>
+                    <tr>
+                        <th>id_eleve</th>
+                    </tr>
+                    <tr>
+                        <th>trimestre</th>
+                    </tr>
+
+                    <tr>
+                        <th>type_stage</th>
+                    </tr>
+
+                    <tr>
+                        <th>lieu_stage</th>
+                    </tr>
+
+                    <tr>
+                        <th>maitre_stage</th>
+                    </tr>
+
+                    <tr>
+                        <th>descriptif</th>
+                    </tr>
+
+                    <tr>
+                        <th>appreciation</th>
+                    </tr>
+                    <tr>
+                        <th>nb_jours</th>
+                    </tr>
+                    <tr>
+                        <th>date_debut</th>
+                    </tr>
+                    <tr>
+                        <th>date_fin</th>
+                    </tr>
+                    <tr>
+                        <th>tuteur</th>
+                    </tr>
+                </tbody>
+            </table>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% for hidden in formStage.hidden_fields %}
+                {{ hidden }}
+                {% endfor %}
+                {{ formStage.import_stage }}
+
+                <div class="row gx-2">
+                    <div class="col-12 mb-2 mb-sm-0 col-sm-auto">
+                        <div>
+                            {{formStage.file|add_classes:'form-control'}}
+                        </div>
+                    </div>
+                    <div class="col-12 mb-sm-0 col-sm-auto">
+                        <input class="btn btn-primary" type="submit" value="Importer">
+                    </div>
+                </div>
+                
+            </form>
+    
+    
+            </fieldset>
+    
+    
+        </div>
+    </div>
+
+</div>
+
+
+{% endblock content %}
