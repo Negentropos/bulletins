@@ -101,9 +101,41 @@
                 </div>
 
                 <a class="btn btn-primary mt-3 mb-3" href="{% url 'export_appreciations_csv' %}">Toutes les appréciations</a>
-
                 <a class="btn btn-danger mt-3 mb-3" href="{% url 'export_appreciations_actives_csv' %}">{{annee_en_cours.intitule}}</a>
     
+            </fieldset>
+
+            <fieldset class="mb-3 rounded shadow">
+                <h2 class="pb-2">Stages</h2>
+
+                <p>Le fichier csv comportera une ligne d'en-tête avec les champs ci-dessous, séparés par des points-virgules.</p>
+                
+                <div class="row gx-2">
+                    <div class="col-12 mb-sm-0 col-sm-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">id</li>
+                            <li class="list-group-item">typeStage</li>
+                            <li class="list-group-item">nom_eleve</li>
+                            <li class="list-group-item">prenom_eleve</li>
+                            <li class="list-group-item">lieuStage</li>
+                            <li class="list-group-item">dureeStage</li>
+                          </ul>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">maitreStage</li>
+                            <li class="list-group-item">tuteur</li>
+                            <li class="list-group-item">dateDebut</li>
+                            <li class="list-group-item">dateFin</li>
+                            <li class="list-group-item">descriptif</li>
+                            <li class="list-group-item">appreciation</li>
+                          </ul>
+                    </div>
+                </div>
+
+                <a class="btn btn-primary mt-3 mb-3" href="{% url 'export_stages_csv' %}">Tous les stages</a>
+                <a class="btn btn-danger mt-3 mb-3" href="{% url 'export_stages_actives_csv' %}">{{annee_en_cours.intitule}}</a>
+
             </fieldset>
 
 

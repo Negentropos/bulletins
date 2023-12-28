@@ -498,10 +498,7 @@ def export_csv_disciplines_actives(request):
 @login_required
 @permission_required('bulletins.view_discipline')
 def export_csv_appreciations(request):
-    annee_en_cours = models.Annee.objects.filter(is_active=True)[0]
-    trimestres=models.Trimestre.objects.filter(annee=annee_en_cours)
-    disciplines=models.Discipline.objects.filter(trimestre__in=trimestres)
-    appreciations=models.Appreciation.objects.filter(discipline__in=disciplines)
+    appreciations=models.Appreciation.objects.all()
 
     reponse = HttpResponse(content_type='text/csv')
     reponse['Content-Disposition'] = 'attachment ; filename= "EMG_exportation_appreciations.csv"'
@@ -519,7 +516,10 @@ def export_csv_appreciations(request):
 @login_required
 @permission_required('bulletins.view_discipline')
 def export_csv_appreciations_actives(request):
-    appreciations=models.Appreciation.objects.all()
+    annee_en_cours = models.Annee.objects.filter(is_active=True)[0]
+    trimestres=models.Trimestre.objects.filter(annee=annee_en_cours)
+    disciplines=models.Discipline.objects.filter(trimestre__in=trimestres)
+    appreciations=models.Appreciation.objects.filter(discipline__in=disciplines)
 
     reponse = HttpResponse(content_type='text/csv')
     reponse['Content-Disposition'] = 'attachment ; filename= "EMG_exportation_appreciations_{annee_en_cours.export()}.csv"'
@@ -531,6 +531,42 @@ def export_csv_appreciations_actives(request):
         writer.writerow([appreciation.id,appreciation.discipline_export(),appreciation.discipline.id,appreciation.eleve.nom,appreciation.eleve.prenom,appreciation.commentaire,appreciation.note,appreciation.attitude,appreciation.engagement,appreciation.resultat,appreciation.competences_export()])
 
     log = models.Journal(utilisateur=request.user, message=f'''Exportation des appréciations année en cours''')
+    log.save()
+    return reponse
+
+@login_required
+@permission_required('bulletins.view_discipline')
+def export_csv_stages(request):
+    stages=models.Stage.objects.all()
+
+    reponse = HttpResponse(content_type='text/csv')
+    reponse['Content-Disposition'] = 'attachment ; filename= "EMG_exportation_stages_{annee_en_cours.export()}.csv"'
+    writer = csv.writer(reponse,delimiter=';')
+    writer.writerow(['id','typeStage','nom_eleve','prenom_eleve','lieuStage','dureeStage','maitreStage','tuteur','dateDebut','dateFin','descriptif','appreciation'])
+
+    for stage in stages :
+        writer.writerow([stage.id,stage.get_typeStage_display(),stage.eleve.nom,stage.eleve.prenom,stage.lieuStage,stage.dureeStage,stage.maitreStage,stage.tuteur.nom_court(),stage.dateDebut,stage.dateFin,stage.descriptif,stage.appreciation])
+
+    log = models.Journal(utilisateur=request.user, message=f'''Exportation des stages''')
+    log.save()
+    return reponse
+
+@login_required
+@permission_required('bulletins.view_discipline')
+def export_csv_stages_actives(request):
+    annee_en_cours = models.Annee.objects.filter(is_active=True)[0]
+    trimestres=models.Trimestre.objects.filter(annee=annee_en_cours)
+    stages=models.Stage.objects.filter(trimestre__in=trimestres)
+
+    reponse = HttpResponse(content_type='text/csv')
+    reponse['Content-Disposition'] = 'attachment ; filename= "EMG_exportation_stages_{annee_en_cours.export()}.csv"'
+    writer = csv.writer(reponse,delimiter=';')
+    writer.writerow(['id','typeStage','nom_eleve','prenom_eleve','lieuStage','dureeStage','maitreStage','tuteur','dateDebut','dateFin','descriptif','appreciation'])
+
+    for stage in stages :
+        writer.writerow([stage.id,stage.get_typeStage_display(),stage.eleve.nom,stage.eleve.prenom,stage.lieuStage,stage.dureeStage,stage.maitreStage,stage.tuteur.nom_court(),stage.dateDebut,stage.dateFin,stage.descriptif,stage.appreciation])
+
+    log = models.Journal(utilisateur=request.user, message=f'''Exportation des stages année en cours''')
     log.save()
     return reponse
 
